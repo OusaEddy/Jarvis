@@ -1,0 +1,6 @@
+[
+    {"name": "Team stand-up", "start": "09:00", "end": "09:15", "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]},
+    {"name": "Client call", "start": "14:00", "end": "15:00", "on_date": "2026-10-28"},
+    {"name": "Weekly review", "start": "16:00", "end": "17:00", "days": ["Friday"]},
+    {"name": "Gym", "start": "18:00", "end": "19:00", "days": ["Monday", "Wednesday"]}
+]

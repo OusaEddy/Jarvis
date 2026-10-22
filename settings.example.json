@@ -1,0 +1,14 @@
+{
+    "wake": "07:00",
+    "sleep": "23:00",
+    "work_start": "09:00",
+    "work_end": "17:00",
+    "lunch_start": "12:30",
+    "lunch_end": "13:30",
+    "focus_start": "09:15",
+    "focus_end": "11:30",
+    "low_start": "15:30",
+    "low_end": "17:00",
+    "work_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    "min_session": 30
+}

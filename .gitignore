@@ -1,0 +1,14 @@
+# Python's compiled cache: rebuilt automatically, never shared
+__pycache__/
+*.pyc
+
+# Virtual environments (Step 19 onwards)
+.venv/
+
+# My own data stays on my laptop. The repo has *.example.json files instead.
+settings.json
+events.json
+tasks.json
+
+# Made fresh by "python -m pacesetter page"
+plan.html

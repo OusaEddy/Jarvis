@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Write client proposal",
+    "minutes": 240,
+    "minutes_done": 60,
+    "done": false,
+    "deadline": "2026-10-30T17:00",
+    "importance": "high",
+    "focus": "deep"
+  },
+  {
+    "id": 2,
+    "name": "Prepare monthly invoices",
+    "minutes": 60,
+    "minutes_done": 0,
+    "done": false,
+    "deadline": null,
+    "importance": "medium",
+    "focus": "light"
+  },
+  {
+    "id": 3,
+    "name": "Update project tracker",
+    "minutes": 45,
+    "minutes_done": 0,
+    "done": false,
+    "deadline": null,
+    "importance": "low",
+    "focus": "normal"
+  }
+]
