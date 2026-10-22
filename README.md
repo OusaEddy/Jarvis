@@ -1,7 +1,8 @@
-# Status
- In development. Version 1 (planning engine and command line tool) works; Versions 2 and 3 are planned.
 # Jarvis
 My personal team of AI agents, built step by step. First agent: PaceSetter.
+
+## Status
+ In development. Version 1 (planning engine and command line tool) works; Versions 2 and 3 are planned.
 
 ## PaceSetter's job
 PaceSetter plans my day so that my hardest work lands in my focus hours, nothing clashes, deadlines are met with time to spare, and I get warned early when things don’t fit
@@ -21,7 +22,7 @@ python -m pacesetter tasks                # tasks and progress
 python -m pacesetter --help               # every command
 ```
 
-On macOS or Linux, use `cp` instead of `copy`.
+## On macOS or Linux, use `cp` instead of `copy`.
 
 ## What it needs to know
 - Fixed Events Examples(Meetings, upcoming events) Details (Name, day, start, end, whether it repeats)
@@ -70,10 +71,6 @@ On macOS or Linux, use `cp` instead of `copy`.
 
 ## Later
 - Online version for companies (logins, separate data, hosting)
-
-
-
-## Later
 - Weekly targets
 - Reminders before each session
 - Reading my calendar (calendar agent)
