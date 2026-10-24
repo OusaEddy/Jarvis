@@ -61,16 +61,20 @@ python -m pacesetter --help               # every command
 - Remembers my tasks and how much of each is done
 - Gives unfinished tasks a daily session until their deadline
 
-## Version 2: web interface
-- An interactive page to plan my day, manage tasks, and edit my settings without code
-- Demo mode with sample data, for presenting to clients
-- My Python engine stays the same underneath
-
-## Version 3
-- Tell PaceSetter what to do in plain English, typed or spoken
+## Version 2: interactive PaceSetter (runs on my laptop)
+- Week view: plans the next 7 days, with sessions carried over day to day
+- Interactive page: add, log and finish tasks by clicking
+- Chat: tell it what to do in plain English; it confirms before saving anything
+- Client mode: separate data for each client, and a demo with sample data
 
 ## Later
+- Voice
+- Going online for clients (hosting, accounts, security): decide after Version 2
 - Online version for companies (logins, separate data, hosting)
 - Weekly targets
 - Reminders before each session
 - Reading my calendar (calendar agent)
+
+## Version 3
+- Tell PaceSetter what to do in plain English, typed or spoken
+

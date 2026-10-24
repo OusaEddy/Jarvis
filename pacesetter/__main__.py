@@ -5,7 +5,7 @@ from datetime import date, datetime
 
 from .alerts import deadline_alerts, event_clashes
 from .events import load_events
-from .planner import plan_day, print_plan
+from .planner import plan_day, plan_week, print_plan, print_week
 from .settings import load_settings
 from .suggestions import suggestions
 from .task import FOCUS, IMPORTANCE, Task, add_task, load_tasks, log_work, mark_done, print_tasks
@@ -75,6 +75,10 @@ def run(args: argparse.Namespace) -> None:
 
     elif args.command == "page":
         page(parse_day(args.day) if args.day else date.today())
+    elif args.command == "week":
+        settings = load_settings()
+        first_day = parse_day(args.day) if args.day else date.today()
+        print_week(settings, plan_week(settings, load_events(), load_tasks(), first_day))
     elif args.command == "tasks":
         print_tasks(load_tasks())
     elif args.command == "add":
@@ -87,6 +91,7 @@ def run(args: argparse.Namespace) -> None:
     elif args.command == "done":
         task = mark_done(args.task_id)
         print(f"Done: [{task.id}] {task.name}")
+    
 
 
 def main() -> None:
@@ -96,6 +101,9 @@ def main() -> None:
 
     page_cmd = commands.add_parser("page", help="my day as a web page in the browser")
     page_cmd.add_argument("day", nargs="?", help="YYYY-MM-DD (default: today)")
+
+    week_cmd = commands.add_parser("week", help="the next 7 days, one line per day")
+    week_cmd.add_argument("day", nargs="?", help="first day, YYYY-MM-DD (default: today)")
 
 
     brief_cmd = commands.add_parser("brief", help="plan, warnings and suggestions for a day")

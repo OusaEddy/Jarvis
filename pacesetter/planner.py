@@ -1,6 +1,6 @@
 import math
 from datetime import date, datetime, timedelta
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from .clock import to_hhmm
 from .task import Task
 from .events import Event
@@ -130,6 +130,34 @@ def print_plan(plan: DayPlan) -> None:
         print(f"  Not planned: {task.name} (needs {minutes} min today)")
     free_total = sum(end - start for start, end in plan.free_left)
     print(f"  Free work time left: {free_total} min")
+
+def plan_week(settings: Settings, events: list[Event], tasks: list[Task], first_day: date, days: int = 7) -> list[DayPlan]:
+    """Plans for several days in a row, assuming each planned session gets done."""
+    projected = [replace(task) for task in tasks]
+    plans = []
+    for offset in range(days):
+        day = first_day + timedelta(days=offset)
+        if not settings.is_work_day(day):
+            plans.append(DayPlan(day, [], [], []))
+            continue
+        plan = plan_day(settings, events, projected, day)
+        for start, end, task in plan.planned:
+            task.minutes_done += end - start
+        plans.append(plan)
+    return plans
+
+def print_week(settings: Settings, plans: list[DayPlan]) -> None:
+    """Show several days, one line per day."""
+    for plan in plans:
+        if not settings.is_work_day(plan.day):
+            print(f"{plan.day:%a %d %b} day off")
+            continue
+        items = [f"{to_hhmm(start)}-{to_hhmm(end)} {task.name}" for start, end, task in plan.planned]
+        print(f"{plan.day:%a %d %b} " + (" | ". join(items) or "nothing planned"))
+        for task, minutes in plan.not_planned:
+            print(f"    not planned: {task.name} ({minutes} min)")
+        
+
 
     
 
