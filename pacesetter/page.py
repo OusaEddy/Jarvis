@@ -9,6 +9,7 @@ from .planner import DayPlan
 from .settings import Settings
 
 PAGE_FILE = Path(__file__).parent.parent / "plan.html"
+WEEK_FILE = Path(__file__).parent.parent / "week.html"
 PIXELS_PER_MINUTE = 1.2
 
 STYLE = """
@@ -43,6 +44,19 @@ ul { margin: 0; padding-left: 20px; }
 footer { color: var(--muted); font-size: .8rem; margin-top: 28px; }
 """
 
+WEEK_STYLE = """
+main.wide { max-width: 1240px; }
+.week{display: grid; grid-template-columns: repeat(7, minmax(140px, 1fr)); gap: 8px;
+      overflow-x: auto; align-items: start; }
+.col { background: var(--card);border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.col h3 { margin: 0; padding: 8px 10px; font-size: .9rem; }
+.slot { padding: 3px 8px; border-left: 5px solid var(--fixed); border-top: 1px solid var(--line);
+       font-size: .79rem; line-height: 1.25; overflow: hidden; }
+.slot.free {border-left-color: var(--free-edge); }
+.slot span { display: block; color: var(--muted); font-variant-numeric: tabular-nums;}
+.off {padding: 10px; color: var(--muted); border-top: 1px solid var(--line);}
+.missed {padding: 6px 8px; font-size: .75rem; color: var(--warn); border-top: 1px solid var(--line);}
+"""
 
 def day_rows(settings: Settings, events: list[Event], plan: DayPlan) -> list[tuple[int, int, str, str, str]]:
     """Everything in my work day, in time order, as (start, end, kind, title, detail)."""
@@ -119,6 +133,39 @@ def render_page(settings: Settings, events: list[Event], plan: DayPlan,
         f"<title>PaceSetter: {plan.day:%a %d %b}</title>\n<style>{STYLE}</style>\n</head>\n<body>\n<main>\n"
         f"<h1>PaceSetter</h1>\n<div class='sub'>Plan for {plan.day:%A %d %B %Y}</div>\n"
         f"<div class='stats'>{stats}</div>\n<div class='day'>{''.join(rows)}</div>\n{extra}\n"
+        "<footer>Made by PaceSetter on this computer. Nothing on this page leaves your laptop.</footer>\n"
+        "</main>\n</body>\n</html>\n"
+    )
+
+def week_column(settings: Settings, events: list[Event], plan: DayPlan) -> str:
+    """One day of the week as a column of blocks, each as tall as it is long."""
+    parts = [f"<h3>{plan.day:%a %d %b}</h3>"]
+    if not settings.is_work_day(plan.day):
+        parts.append('<div class="off">Day off</div>')
+    else:
+        for start, end, kind, title, _ in day_rows(settings, events, plan):
+            height = round((end - start) * PIXELS_PER_MINUTE)
+            parts.append(
+                f'<div class="slot {kind}" style="height:{height}px">'
+                f"<span>{to_hhmm(start)}-{to_hhmm(end)}</span>{html.escape(title)}</div>"
+            )
+        for task, minutes in plan.not_planned:
+            parts.append(f'<div class="missed">Not planned: {html.escape(task.name)} ({minutes} min)</div>')
+    return '<div class="col">' + "".join(parts) + "</div>"
+
+
+def render_week(settings: Settings, events: list[Event], plans: list[DayPlan]) -> str:
+    """The week as one page: seven columns, one per day."""
+    columns = "".join(week_column(settings, events, plan) for plan in plans)
+    planned_minutes = sum(end - start for plan in plans for start, end, _ in plan.planned)
+    first, last = plans[0].day, plans[-1].day
+    return (
+        "<!doctype html>\n<html lang='en'>\n<head>\n<meta charset='utf-8'>\n"
+        "<meta name='viewport' content='width=device-width, initial-scale=1'>\n"
+        f"<title>PaceSetter: week of {first:%d %b}</title>\n<style>{STYLE}{WEEK_STYLE}</style>\n</head>\n<body>\n"
+        f"<main class='wide'>\n<h1>PaceSetter</h1>\n"
+        f"<div class='sub'>{first:%A %d %B} to {last:%A %d %B %Y}: {planned_minutes} min of planned work</div>\n"
+        f"<div class='week'>{columns}</div>\n"
         "<footer>Made by PaceSetter on this computer. Nothing on this page leaves your laptop.</footer>\n"
         "</main>\n</body>\n</html>\n"
     )

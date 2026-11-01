@@ -9,7 +9,7 @@ from .planner import plan_day, plan_week, print_plan, print_week
 from .settings import load_settings
 from .suggestions import suggestions
 from .task import FOCUS, IMPORTANCE, Task, add_task, load_tasks, log_work, mark_done, print_tasks
-from .page import open_page, render_page
+from .page import WEEK_FILE, open_page, render_page, render_week
 
 
 def gather(day: date):
@@ -77,8 +77,14 @@ def run(args: argparse.Namespace) -> None:
         page(parse_day(args.day) if args.day else date.today())
     elif args.command == "week":
         settings = load_settings()
+        events = load_events()
         first_day = parse_day(args.day) if args.day else date.today()
-        print_week(settings, plan_week(settings, load_events(), load_tasks(), first_day))
+        plans = plan_week(settings, events, load_tasks(), first_day)
+        if args.page:
+            path = open_page(render_week(settings, events, plans), WEEK_FILE)
+            print(f"Opened {path.name} in your browser.")
+        else:
+            print_week(settings, plans)
     elif args.command == "tasks":
         print_tasks(load_tasks())
     elif args.command == "add":
@@ -104,6 +110,7 @@ def main() -> None:
 
     week_cmd = commands.add_parser("week", help="the next 7 days, one line per day")
     week_cmd.add_argument("day", nargs="?", help="first day, YYYY-MM-DD (default: today)")
+    week_cmd.add_argument("--page", action="store_true", help="show the week as a web page")
 
 
     brief_cmd = commands.add_parser("brief", help="plan, warnings and suggestions for a day")
