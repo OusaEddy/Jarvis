@@ -15,7 +15,7 @@ My own settings, events and tasks stay on my laptop, so this repo comes with sam
 ```
 copy settings.example.json settings.json
 copy events.example.json events.json
-copy tasks.example.json tasks.json
+python -m pacesetter import-json tasks.example.json
 python -m pacesetter brief 2026-10-26     # a day's plan, warnings and suggestions
 python -m pacesetter page 2026-10-26      # the same day as a web page
 python -m pacesetter tasks                # tasks and progress

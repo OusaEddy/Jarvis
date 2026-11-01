@@ -1,6 +1,7 @@
 """Run PaceSetter from the terminal: daily brief, and commands to manage my tasks."""
 import argparse
 import sys
+from pathlib import Path
 from datetime import date, datetime
 
 from .alerts import deadline_alerts, event_clashes
@@ -8,7 +9,9 @@ from .events import load_events
 from .planner import plan_day, plan_week, print_plan, print_week
 from .settings import load_settings
 from .suggestions import suggestions
-from .task import FOCUS, IMPORTANCE, Task, add_task, load_tasks, log_work, mark_done, print_tasks
+from .db import DB_FILE
+from .task import (FOCUS, IMPORTANCE, TASKS_FILE, Task, add_task, import_tasks_json, load_history,
+                   load_tasks, log_work, mark_done, print_history, print_tasks)
 from .page import WEEK_FILE, open_page, render_page, render_week
 
 
@@ -91,8 +94,14 @@ def run(args: argparse.Namespace) -> None:
         deadline = parse_deadline(args.deadline) if args.deadline else None
         task = add_task(Task(args.name, args.minutes, deadline, args.importance, args.focus))
         print(f"Added [{task.id}] {task.name}")
+    elif args.command == "history":
+        print_history(load_history())
+    elif args.command == "import-json":
+        count = import_tasks_json(args.file)
+        print(f"imported {count} tasks from {args.file.name} into {DB_FILE.name}.")
     elif args.command == "log":
-        task = log_work(args.task_id, args.minutes)
+        day = parse_day(args.day) if args.day else None
+        task = log_work(args.task_id, args.minutes, day)
         print(f"Logged {args.minutes} min on [{task.id}] {task.name}, {task.remaining()} min left")
     elif args.command == "done":
         task = mark_done(args.task_id)
@@ -128,6 +137,12 @@ def main() -> None:
     log_cmd = commands.add_parser("log", help="record minutes I worked on a task")
     log_cmd.add_argument("task_id", type=int)
     log_cmd.add_argument("minutes", type=int)
+    log_cmd.add_argument("--day", help="the day I did it,YYYY-MM-DD (default: today)")
+
+    commands.add_parser("history", help="every work session I logged")
+
+    import_cmd = commands.add_parser("import-json", help="copy tasks from a JSON file into the database, once")
+    import_cmd.add_argument("file", nargs="?", type=Path, default=TASKS_FILE, help="default: tasks.json")
 
     done_cmd = commands.add_parser("done", help="mark a task as finished")
     done_cmd.add_argument("task_id", type=int)
