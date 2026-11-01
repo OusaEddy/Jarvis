@@ -9,10 +9,14 @@ PaceSetter plans my day so that my hardest work lands in my focus hours, nothing
 
 ## Try it
 Needs Python 3.10 or newer. Nothing to install for the terminal commands.
+
+for the live page in your browser
+```
 python -m venv .venv
 .venv\Scripts\python -m pip install -r requirements.txt
 .venv\Scripts\python -m pacesetter serve
-Opens PaceSetter live at http://127.0.0.1:5000, reachable from this laptop only.
+```
+Opens PaceSetter live at http://127.0.0.1:5000, reachable from this laptop only. Add tasks, log work and mark tasks done from the page.
 
 
 My own settings, events and tasks stay on my laptop, so this repo comes with sample ones. From the Jarvis folder:

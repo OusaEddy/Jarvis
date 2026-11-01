@@ -57,8 +57,23 @@ main.wide { max-width: 1240px; }
 .off {padding: 10px; color: var(--muted); border-top: 1px solid var(--line);}
 .missed {padding: 6px 8px; font-size: .75rem; color: var(--warn); border-top: 1px solid var(--line);}
 .links {display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 14px;}
-.links a {color: var(--nirmal); font-weight: 600; text-decoration: none;}
+.links a {color: var(--normal); font-weight: 600; text-decoration: none;}
 .links a:hover {text-decoration: underline;}
+.msg { padding: 8px 12px; margin-bottom: 12px; border-radius: 8px;
+       background: var(--free); border: 1px solid var(--free-edge); }
+.msg.error { background: #fbeceb; border-color: var(--warn); color: var(--warn); }
+.panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-top: 20px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+.card h2 { margin: 0 0 10px; }
+.card label { display: block; margin-bottom: 8px; font-size: .85rem; color: var(--muted); }
+.card input, .card select { display: block; width: 100%; margin-top: 2px; padding: 6px 8px; font: inherit;
+                            color: var(--ink); border: 1px solid var(--line); border-radius: 6px; }
+.card button { padding: 6px 14px; font: inherit; color: #fff; background: var(--normal);
+               border: 0; border-radius: 6px; cursor: pointer; }
+.card table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.card td { padding: 6px 4px; border-top: 1px solid var(--line); }
+.card td form { margin: 0; }
+.card td button { padding: 3px 10px; font-size: .8rem; }
 """
 
 def day_rows(settings: Settings, events: list[Event], plan: DayPlan) -> list[tuple[int, int, str, str, str]]:
@@ -157,8 +172,9 @@ def week_column(settings: Settings, events: list[Event], plan: DayPlan) -> str:
     return '<div class="col">' + "".join(parts) + "</div>"
 
 
-def render_week(settings: Settings, events: list[Event], plans: list[DayPlan], links: str = "") -> str:
-    """The week as one page: seven columns, one per day, with optional links above them."""
+def render_week(settings: Settings, events: list[Event], plans: list[DayPlan],
+                links: str = "", panel: str = "") -> str:
+    """The week as one page: seven columns, one per day, with optional links above and a panel below."""
     columns = "".join(week_column(settings, events, plan) for plan in plans)
     planned_minutes = sum(end - start for plan in plans for start, end, _ in plan.planned)
     first, last = plans[0].day, plans[-1].day
@@ -168,7 +184,7 @@ def render_week(settings: Settings, events: list[Event], plans: list[DayPlan], l
         f"<title>PaceSetter: week of {first:%d %b}</title>\n<style>{STYLE}{WEEK_STYLE}</style>\n</head>\n<body>\n"
         f"<main class='wide'>\n<h1>PaceSetter</h1>\n"
         f"<div class='sub'>{first:%A %d %B} to {last:%A %d %B %Y}: {planned_minutes} min of planned work</div>\n"
-        f"{links}<div class='week'>{columns}</div>\n"
+        f"{links}<div class='week'>{columns}</div>\n{panel}"
         "<footer>Made by PaceSetter on this computer. Nothing on this page leaves your laptop.</footer>\n"
         "</main>\n</body>\n</html>\n"
     )
