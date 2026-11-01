@@ -106,6 +106,9 @@ def run(args: argparse.Namespace) -> None:
     elif args.command == "done":
         task = mark_done(args.task_id)
         print(f"Done: [{task.id}] {task.name}")
+    elif args.command == "serve":
+        from .web import serve
+        serve(args.port)
     
 
 
@@ -146,6 +149,9 @@ def main() -> None:
 
     done_cmd = commands.add_parser("done", help="mark a task as finished")
     done_cmd.add_argument("task_id", type=int)
+
+    serve_cmd = commands.add_parser("serve", help="Pacesetter live in my browser, on this laptop only")
+    serve_cmd.add_argument("--port", type=int, default=5000, help="default: 5000")
 
     args = parser.parse_args()
     try:

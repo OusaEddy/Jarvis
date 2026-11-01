@@ -56,6 +56,9 @@ main.wide { max-width: 1240px; }
 .slot span { display: block; color: var(--muted); font-variant-numeric: tabular-nums;}
 .off {padding: 10px; color: var(--muted); border-top: 1px solid var(--line);}
 .missed {padding: 6px 8px; font-size: .75rem; color: var(--warn); border-top: 1px solid var(--line);}
+.links {display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 14px;}
+.links a {color: var(--nirmal); font-weight: 600; text-decoration: none;}
+.links a:hover {text-decoration: underline;}
 """
 
 def day_rows(settings: Settings, events: list[Event], plan: DayPlan) -> list[tuple[int, int, str, str, str]]:
@@ -154,8 +157,8 @@ def week_column(settings: Settings, events: list[Event], plan: DayPlan) -> str:
     return '<div class="col">' + "".join(parts) + "</div>"
 
 
-def render_week(settings: Settings, events: list[Event], plans: list[DayPlan]) -> str:
-    """The week as one page: seven columns, one per day."""
+def render_week(settings: Settings, events: list[Event], plans: list[DayPlan], links: str = "") -> str:
+    """The week as one page: seven columns, one per day, with optional links above them."""
     columns = "".join(week_column(settings, events, plan) for plan in plans)
     planned_minutes = sum(end - start for plan in plans for start, end, _ in plan.planned)
     first, last = plans[0].day, plans[-1].day
@@ -165,7 +168,7 @@ def render_week(settings: Settings, events: list[Event], plans: list[DayPlan]) -
         f"<title>PaceSetter: week of {first:%d %b}</title>\n<style>{STYLE}{WEEK_STYLE}</style>\n</head>\n<body>\n"
         f"<main class='wide'>\n<h1>PaceSetter</h1>\n"
         f"<div class='sub'>{first:%A %d %B} to {last:%A %d %B %Y}: {planned_minutes} min of planned work</div>\n"
-        f"<div class='week'>{columns}</div>\n"
+        f"{links}<div class='week'>{columns}</div>\n"
         "<footer>Made by PaceSetter on this computer. Nothing on this page leaves your laptop.</footer>\n"
         "</main>\n</body>\n</html>\n"
     )
